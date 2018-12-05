@@ -1,3 +1,4 @@
 NODE: CS15
 GPU: Tesla K80
 Capability: 3.7
+cmd: nvcc -arch=compute_37 -code=sm_37 -lcuda SRC -o OUT
