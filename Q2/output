@@ -1,0 +1,49 @@
+RUNNING FOR N=100
+Warming up GPU for time trialing...
+
+tmp (changed to 555 on GPU): 555Size of A+B+C (GiB): 0.000001
+CPU TIME: 0.000002
+CPU->GPU COPY TIME: 0.000031
+total blocks: 1
+GPU RUN TIME: 0.000018
+GPU->CPU COPY TIME: 0.000015
+
+RUNNING FOR N=1000
+Warming up GPU for time trialing...
+
+tmp (changed to 555 on GPU): 555Size of A+B+C (GiB): 0.000011
+CPU TIME: 0.000005
+CPU->GPU COPY TIME: 0.000034
+total blocks: 1
+GPU RUN TIME: 0.000019
+GPU->CPU COPY TIME: 0.000016
+
+RUNNING FOR N=100000
+Warming up GPU for time trialing...
+
+tmp (changed to 555 on GPU): 555Size of A+B+C (GiB): 0.001118
+CPU TIME: 0.000329
+CPU->GPU COPY TIME: 0.000255
+total blocks: 98
+GPU RUN TIME: 0.000057
+GPU->CPU COPY TIME: 0.000102
+
+RUNNING FOR N=10000000
+Warming up GPU for time trialing...
+
+tmp (changed to 555 on GPU): 555Size of A+B+C (GiB): 0.111759
+CPU TIME: 0.033828
+CPU->GPU COPY TIME: 0.013445
+total blocks: 9766
+GPU RUN TIME: 0.000816
+GPU->CPU COPY TIME: 0.004109
+
+RUNNING FOR N=50000000
+Warming up GPU for time trialing...
+
+tmp (changed to 555 on GPU): 555Size of A+B+C (GiB): 0.558794
+CPU TIME: 0.169320
+CPU->GPU COPY TIME: 0.065544
+total blocks: 48829
+GPU RUN TIME: 0.003731
+GPU->CPU COPY TIME: 0.018244

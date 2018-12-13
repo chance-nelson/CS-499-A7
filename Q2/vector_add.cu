@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 	C_CPU = (unsigned int *) malloc(sizeof(unsigned int)*N);
 
 
-	printf("\nSize of A+B+C (GiB): %f",(sizeof(unsigned int)*N*3.0)/(1024.0*1024.0*1024.0));
+	printf("Size of A+B+C (GiB): %f\n",(sizeof(unsigned int)*N*3.0)/(1024.0*1024.0*1024.0));
 	
 	
     //init:
@@ -63,8 +63,6 @@ int main(int argc, char *argv[]) {
 	unsigned int * dev_B;
 	unsigned int * dev_C;
 
-    t_start = omp_get_wtime();
-
 	//allocate on the device: A, B, C
 	errCode = cudaMalloc((unsigned int**)&dev_A, sizeof(unsigned int)*N);	
 	if(errCode != cudaSuccess) {
@@ -81,7 +79,9 @@ int main(int argc, char *argv[]) {
 	    cout << "\nError: C error with code " << errCode << endl; 
 	}
 
-	//copy A to device
+    t_start = omp_get_wtime();
+	
+    //copy A to device
 	errCode = cudaMemcpy(dev_A, A, sizeof(unsigned int)*N, cudaMemcpyHostToDevice);
 	if(errCode != cudaSuccess) {
 	    cout << "\nError: A memcpy error with code " << errCode << endl; 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 	//execute kernel
 	const unsigned int totalBlocks=ceil(N*1.0/1024.0);
 	
-    printf("\ntotal blocks: %d",totalBlocks);
+    printf("total blocks: %d\n",totalBlocks);
 
     t_start = omp_get_wtime();    
     
@@ -154,7 +154,7 @@ __global__ void warmup(unsigned int * tmp) {
 
 
 void warmUpGPU() {
-    printf("\nWarming up GPU for time trialing...\n");	
+    printf("Warming up GPU for time trialing...\n");	
     
     unsigned int *dev_tmp;
     unsigned int *tmp;
