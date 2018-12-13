@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
+#include <omp.h>
 
 
-#define N 500000000 
+//#define N 100 
 
 
 using namespace std;
@@ -16,7 +17,11 @@ __global__ void vectorAdd(unsigned int * A, unsigned int * B, unsigned int * C);
 
 
 int main(int argc, char *argv[]) {
-	warmUpGPU();
+    printf("RUNNING FOR N=%d\n", N);
+    
+    double t_start;
+
+    warmUpGPU();
 	
 	unsigned int * A;
 	unsigned int * B;
@@ -31,7 +36,8 @@ int main(int argc, char *argv[]) {
 
 	printf("\nSize of A+B+C (GiB): %f",(sizeof(unsigned int)*N*3.0)/(1024.0*1024.0*1024.0));
 	
-	//init:
+	
+    //init:
 	int i = 0;
 	for(i = 0; i < N; i++) {
 		A[i]     = i;
@@ -42,11 +48,13 @@ int main(int argc, char *argv[]) {
 
 	//CPU version:
 	
+    t_start = omp_get_wtime();
 	
-	for(int i = 0; i < N; i++) {
+    for(int i = 0; i < N; i++) {
 		C_CPU[i] = A[i] + B[i];
 	}
 	
+    printf("CPU TIME: %lf\n", omp_get_wtime() - t_start);
 	
 	//CUDA error code:
 	cudaError_t errCode = cudaSuccess;
@@ -54,6 +62,8 @@ int main(int argc, char *argv[]) {
 	unsigned int * dev_A;
 	unsigned int * dev_B;
 	unsigned int * dev_C;
+
+    t_start = omp_get_wtime();
 
 	//allocate on the device: A, B, C
 	errCode = cudaMalloc((unsigned int**)&dev_A, sizeof(unsigned int)*N);	
@@ -89,16 +99,27 @@ int main(int argc, char *argv[]) {
 	    cout << "\nError: A memcpy error with code " << errCode << endl; 
 	}
 
+    printf("CPU->GPU COPY TIME: %lf\n", omp_get_wtime() - t_start);
+
 	//execute kernel
 	const unsigned int totalBlocks=ceil(N*1.0/1024.0);
 	
     printf("\ntotal blocks: %d",totalBlocks);
-	
+
+    t_start = omp_get_wtime();    
+    
     vectorAdd<<<totalBlocks,1024>>>(dev_A, dev_B, dev_C);
+
+    cudaDeviceSynchronize();
+
+    printf("GPU RUN TIME: %lf\n", omp_get_wtime() - t_start);
 
 	if(errCode != cudaSuccess) {
 		cout<<"Error after kernel launch "<<errCode<<endl;
 	}
+
+
+    t_start = omp_get_wtime();
 
 	//copy data from device to host 
 	errCode=cudaMemcpy( C, dev_C, sizeof(unsigned int)*N, cudaMemcpyDeviceToHost);
@@ -106,7 +127,9 @@ int main(int argc, char *argv[]) {
 	    cout << "\nError: getting C result form GPU error with code " << errCode << endl; 
 	}
 
-	return 0;
+    printf("GPU->CPU COPY TIME: %lf\n", omp_get_wtime() - t_start);
+	
+    return 0;
 }
 
 
