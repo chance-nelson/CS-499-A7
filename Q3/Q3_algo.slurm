@@ -11,7 +11,7 @@
 
 module load cuda
 
-binary=ep%a
+binary=ep_$SLURM_ARRAY_TASK_ID
 
 nvcc -arch=compute_37 -code=sm_37 -lcuda point_epsilon_algo.cu -o $binary --compiler-options='-DN=100 -fopenmp -lm'
 printf "100\n"
